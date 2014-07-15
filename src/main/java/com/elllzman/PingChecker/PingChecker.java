@@ -28,11 +28,11 @@ public class PingChecker extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
         if(cmd.getName().equalsIgnoreCase("ping")) {
+
             final Player p = (Player) sender;
-
-
-
             final InetAddress address = p.getAddress().getAddress();
+
+
             Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
@@ -50,7 +50,6 @@ public class PingChecker extends JavaPlugin {
                         e.printStackTrace();
                         p.sendMessage(ChatColor.RED + "Ping failed! Check console for more details!");
                     }
-
                 }
             });
         }
