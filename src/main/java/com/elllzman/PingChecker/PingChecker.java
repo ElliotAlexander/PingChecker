@@ -48,7 +48,8 @@ public class PingChecker extends JavaPlugin {
                     }
                 }
             });
+            return true;
         }
-        return true;
+        return false;
     }
 }
