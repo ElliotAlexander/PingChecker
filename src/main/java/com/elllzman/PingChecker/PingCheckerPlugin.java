@@ -32,12 +32,22 @@ public class PingCheckerPlugin extends JavaPlugin {
             Player player;
             //if there is a player name provided
             if(args.length > 0) {
+                if(!sender.hasPermission("ping.command.other")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to ping another player");
+                    return true;
+                }
+
                 player = Bukkit.getPlayer(args[0]);
                 if(null == player) {
                     sender.sendMessage(ChatColor.RED + "Player is not online!");
                     return true;
                 }
             } else {
+                if(!sender.hasPermission("ping.command.self")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to ping yourself");
+                    return true;
+                }
+
                 if(!(sender instanceof Player)) {
                     sender.sendMessage(ChatColor.RED + "Must provide a player name if not ran as a player");
                     return true;
