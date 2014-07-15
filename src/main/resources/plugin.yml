@@ -5,3 +5,7 @@ commands:
   ping:
     usage: /ping
     permission: ping.main
+permissions:
+  ping.main:
+    description: Allows use of the /ping command
+    default: true
