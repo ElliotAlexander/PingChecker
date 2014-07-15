@@ -30,26 +30,25 @@ public class PingChecker extends JavaPlugin {
         if(cmd.getName().equalsIgnoreCase("ping")) {
             final Player p = (Player) sender;
 
+            final InetAddress address;
+
+            try {
+                address = InetAddress.getByAddress(p.getAddress().getAddress().getAddress());
+            } catch (Exception e) {
+                e.printStackTrace();
+                p.sendMessage(ChatColor.RED + "Ping failed! Check console for more details!");
+                return true;
+            }
+
+
+
+
             Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    InetAddress address = null;
-
-                    byte[] addr = p.getAddress().getAddress().getAddress();
-
                     try {
-                        address = InetAddress.getByAddress(addr);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        p.sendMessage(ChatColor.RED + "Ping failed! Check console for more details!");
-                        return;
-                    }
-
-                    Date start, stop;
-                    Long time = null;
-
-
-                    try {
+                        Date start, stop;
+                        Long time = null;
                         start = new Date();
                         if (address.isReachable(1000)) {
                             stop = new Date();
