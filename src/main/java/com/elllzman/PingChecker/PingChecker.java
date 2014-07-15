@@ -1,38 +1,34 @@
 package com.elllzman.PingChecker;
 
-import org.bukkit.ChatColor;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-import java.net.InetAddress;
-import java.util.Date;
-
-public class PingChecker implements Runnable
+public class PingChecker
 {
-    private final Player player;
-
-    public PingChecker(Player player)
+    public PingChecker(Plugin plugin, ProtocolManager protocolManager)
     {
-        this.player = player;
+        protocolManager.addPacketListener(
+                new PacketAdapter(plugin, ListenerPriority.NORMAL) {
+                    @Override
+                    public void onPacketSending(PacketEvent event)
+                    {
+                        if(event.getPacketType() == PacketType.Play.Server.PLAYER_INFO) {
+                            long currentTime = System.currentTimeMillis();
+                            //TODO
+                        }
+                    }
+                }
+        );
     }
 
-    @Override
-    public void run()
+    public PingInfo checkPingForPlayer(Player sender)
     {
-        InetAddress address = player.getAddress().getAddress();
-
-        try {
-            Date start, stop;
-            Long time = null;
-            start = new Date();
-            if (address.isReachable(1000)) {
-                stop = new Date();
-                time = (stop.getTime() - start.getTime());
-                player.sendMessage(ChatColor.GREEN + "Your ping is " + time.toString() + "ms");
-                return;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            player.sendMessage(ChatColor.RED + "Ping failed! Check console for more details!");
-        }
+        //TODO
+        return null;
     }
 }
