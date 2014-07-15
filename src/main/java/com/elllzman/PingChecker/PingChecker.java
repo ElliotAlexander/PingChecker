@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.net.InetAddress;
 import java.util.Date;
@@ -21,45 +22,49 @@ public class PingChecker extends JavaPlugin {
     public void onEnable()
     {
         plugin = this;
+
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
-        if(cmd.getName().equalsIgnoreCase("ping"))
-        {
-            Player p = (Player)sender;
+        if(cmd.getName().equalsIgnoreCase("ping")) {
+            final Player p = (Player) sender;
 
-            InetAddress address = null;
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    InetAddress address = null;
 
-            byte[] addr = p.getAddress().getAddress().getAddress();
+                    byte[] addr = p.getAddress().getAddress().getAddress();
 
-            try {address = InetAddress.getByAddress(addr); }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-                p.sendMessage(ChatColor.RED + "Ping failed! Check console for more details!");
-                return true;
-            }
+                    try {
+                        address = InetAddress.getByAddress(addr);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        p.sendMessage(ChatColor.RED + "Ping failed! Check console for more details!");
+                        return;
+                    }
 
-            Date start, stop;
-            Long time = null;
+                    Date start, stop;
+                    Long time = null;
 
 
-            try {
-                start = new Date();
-                if(address.isReachable(1000)) {
-                    stop = new Date();
-                    time = (stop.getTime() - start.getTime());
-                    p.sendMessage(ChatColor.GREEN + "Your ping is " + time.toString() + "ms");
-                    return true;
+                    try {
+                        start = new Date();
+                        if (address.isReachable(1000)) {
+                            stop = new Date();
+                            time = (stop.getTime() - start.getTime());
+                            p.sendMessage(ChatColor.GREEN + "Your ping is " + time.toString() + "ms");
+                            return;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        p.sendMessage(ChatColor.RED + "Ping failed! Check console for more details!");
+                    }
+
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                p.sendMessage(ChatColor.RED + "Ping failed! Check console for more details!");
-            }
-
+            });
         }
         return true;
     }
-
 }
