@@ -1,5 +1,6 @@
 package com.elllzman.PingChecker;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -22,18 +23,28 @@ public class PingCheckerPlugin extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
         if(cmd.getName().equalsIgnoreCase("ping")) {
-            if(!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + "This command can only be called by a player");
-                return true;
-            }
-
             if(pingChecker == null) {
                 sender.sendMessage(ChatColor.RED + "There was an when the plugin was started, check the console for more information");
                 return true;
             }
 
-            sender.sendMessage(ChatColor.GOLD + "Your ping is: " + pingChecker.checkPingForPlayer((Player) sender));
+            Player player = null;
+            //if there is a player name provided
+            if(args.length > 0) {
+                player = Bukkit.getPlayer(args[0]);
+                if(null == player) {
+                    sender.sendMessage(ChatColor.RED + "Player is not online!");
+                    return true;
+                }
+            } else {
+                if(!(sender instanceof Player)) {
+                    sender.sendMessage(ChatColor.RED + "Must provide a player name if not ran as a player");
+                    return true;
+                }
+                player = (Player) sender;
+            }
 
+            sender.sendMessage(ChatColor.GOLD + "Ping: " + pingChecker.checkPingForPlayer(player));
             return true;
         }
         return false;

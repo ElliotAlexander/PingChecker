@@ -3,7 +3,7 @@ version: 1.0.1
 main: com.elllzman.PingChecker.PingCheckerPlugin
 commands:
   ping:
-    usage: /ping
+    usage: /ping [playername]
     permission: ping.main
 permissions:
   ping.main:
