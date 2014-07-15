@@ -20,6 +20,7 @@ public class PingCheckerPlugin extends JavaPlugin {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
         if(cmd.getName().equalsIgnoreCase("ping")) {
@@ -28,7 +29,7 @@ public class PingCheckerPlugin extends JavaPlugin {
                 return true;
             }
 
-            Player player = null;
+            Player player;
             //if there is a player name provided
             if(args.length > 0) {
                 player = Bukkit.getPlayer(args[0]);
