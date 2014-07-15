@@ -1,6 +1,5 @@
 package com.elllzman.PingChecker;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,7 +12,7 @@ public class PingCheckerPlugin extends JavaPlugin {
 
     public void onEnable()
     {
-        pingChecker = new PingChecker(this, ProtocolLibrary.getProtocolManager());
+        pingChecker = new PingChecker();
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
@@ -24,8 +23,8 @@ public class PingCheckerPlugin extends JavaPlugin {
                 return true;
             }
 
-            PingInfo info = pingChecker.checkPingForPlayer((Player) sender);
-            sender.sendMessage(ChatColor.GOLD + "Your ping is: " + info.getLastPing());
+            short ping = pingChecker.checkPingForPlayer((Player) sender);
+            sender.sendMessage(ChatColor.GOLD + "Your ping is: " + ping);
             return true;
         }
         return false;
