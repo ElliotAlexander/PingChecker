@@ -1,0 +1,7 @@
+name: PingChecker
+version: 1.0.1
+main: com.elllzman.PingChecker.PingChecker
+commands:
+  ping:
+    usage: /ping
+    permission: ping.main
