@@ -12,7 +12,11 @@ public class PingCheckerPlugin extends JavaPlugin {
 
     public void onEnable()
     {
-        pingChecker = new PingChecker();
+        try {
+            pingChecker = new PingChecker(this);
+        } catch(UnknownMinecraftVersionException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
@@ -23,8 +27,13 @@ public class PingCheckerPlugin extends JavaPlugin {
                 return true;
             }
 
-            short ping = pingChecker.checkPingForPlayer((Player) sender);
-            sender.sendMessage(ChatColor.GOLD + "Your ping is: " + ping);
+            if(pingChecker == null) {
+                sender.sendMessage(ChatColor.RED + "There was an when the plugin was started, check the console for more information");
+                return true;
+            }
+
+            sender.sendMessage(ChatColor.GOLD + "Your ping is: " + pingChecker.checkPingForPlayer((Player) sender));
+
             return true;
         }
         return false;
