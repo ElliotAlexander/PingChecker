@@ -5,21 +5,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.net.InetAddress;
 import java.util.Date;
 
 public class PingChecker extends JavaPlugin {
-
-    private Plugin plugin;
-
-    public void onEnable()
-    {
-        plugin = this;
-
-    }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
@@ -29,7 +20,7 @@ public class PingChecker extends JavaPlugin {
             final InetAddress address = p.getAddress().getAddress();
 
 
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
                 @Override
                 public void run() {
                     try {
