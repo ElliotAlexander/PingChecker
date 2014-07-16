@@ -1,7 +1,17 @@
 name: PingChecker
 version: 1.0.1
-main: com.elllzman.PingChecker.PingChecker
+main: com.elllzman.PingChecker.PingCheckerPlugin
 commands:
   ping:
-    usage: /ping
-    permission: ping.main
+    usage: /ping [playername]
+    permission: ping.command
+permissions:
+  ping.command:
+    description: Allows use of the /ping command, requires ping.command.self or ping.command.other to do anything
+    default: true
+  ping.command.self:
+    description: Allows use of the /ping command without arguments
+    default: true
+  ping.command.other:
+    description: Allows use of the /ping command with a player name
+    default: op

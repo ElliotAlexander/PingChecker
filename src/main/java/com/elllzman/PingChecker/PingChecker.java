@@ -1,58 +1,56 @@
 package com.elllzman.PingChecker;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.plugin.UnknownDependencyException;
 
-import java.net.InetAddress;
-import java.util.Date;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-/**
- * Created by Elliot on 15/07/2014.
- */
-public class PingChecker extends JavaPlugin {
+public class PingChecker
+{
+    private final Method getEntityPlayerMethod;
+    private final Field pingField;
 
-    private Plugin plugin;
-
-    public void onEnable()
+    /**
+     * Creates a new ping checker
+     *
+     * @param plugin the plugin class
+     * @throws com.elllzman.PingChecker.UnknownMinecraftVersionException when class/methods cannot be found, invalid MC version?
+     */
+    public PingChecker(Plugin plugin) throws UnknownMinecraftVersionException
     {
-        plugin = this;
+        // Get full package string of CraftServer.
+        // org.bukkit.craftbukkit.version
+        String packageName = plugin.getServer().getClass().getPackage().getName();
+        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
 
+        String craftPlayerClassName = "org.bukkit.craftbukkit." + version + ".entity.CraftPlayer";
+
+        try {
+            Class craftPlayerClass = Class.forName(craftPlayerClassName);
+            getEntityPlayerMethod = craftPlayerClass.getMethod("getHandle");
+            pingField = getEntityPlayerMethod.getReturnType().getField("ping");
+        } catch(NoSuchMethodException e) {
+            throw new UnknownMinecraftVersionException("Handle method not found");
+        } catch(ClassNotFoundException e) {
+            throw new UnknownDependencyException("CraftPlayer class not found");
+        } catch(NoSuchFieldException e) {
+            throw new UnknownDependencyException("Ping field not found");
+        }
     }
 
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+    public int checkPingForPlayer(Player player)
     {
-        if(cmd.getName().equalsIgnoreCase("ping")) {
-
-            final Player p = (Player) sender;
-            final InetAddress address = p.getAddress().getAddress();
-
-
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Date start, stop;
-                        Long time = null;
-                        start = new Date();
-                        if (address.isReachable(1000)) {
-                            stop = new Date();
-                            time = (stop.getTime() - start.getTime());
-                            p.sendMessage(ChatColor.GREEN + "Your ping is " + time.toString() + "ms");
-                            return;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        p.sendMessage(ChatColor.RED + "Ping failed! Check console for more details!");
-                    }
-                }
-            });
+        try {
+            Object entityPlayer = getEntityPlayerMethod.invoke(player);
+            return (Integer) pingField.get(entityPlayer);
+        } catch(IllegalAccessException e) {
+            e.printStackTrace();
+        } catch(InvocationTargetException e) {
+            e.printStackTrace();
         }
-        return true;
+        throw new UnknownDependencyException("Error getting the ping field from the player");
     }
 }
